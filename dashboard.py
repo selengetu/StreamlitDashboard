@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 
+st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
+
 def show_dashboard():
     
     BASE_DIR = os.path.join(os.getcwd(), "dummy_csvs")  # Use relative path
@@ -495,7 +497,7 @@ def show_dashboard():
             fig.update_layout(
                 xaxis_title="Month",
                 yaxis_title="Number of Units",
-                yaxis=dict(range=[0, 200]),  # Optional: adjust y-axis range
+                yaxis=dict(range=[0,37]), 
                 legend_title="Event Type",
                 width=1000,
                 height=600
@@ -1248,7 +1250,7 @@ def show_dashboard():
                 summary,
                 x="Property Name",
                 y="Eviction_Filings",
-                title="📉 Eviction_Filings by Property",
+                title="📉 Eviction Filings by Property",
                 color="Eviction_Filings",
                 color_continuous_scale="OrRd",
                 text="Eviction_Filings"
@@ -1356,7 +1358,7 @@ def show_dashboard():
             fig.add_trace(go.Scatter(
                 x=monthly_summary['Month'],
                 y=monthly_summary['Reference'],
-                name='Reference Count',
+                name='Bill Count',
                 yaxis='y2',
                 mode='lines+markers+text',
                 line=dict(color='orange', width=3),
@@ -1471,5 +1473,5 @@ def show_dashboard():
             st.write(bill1)
        
 
-# if __name__ == "__main__":
-#     show_dashboard()
+if __name__ == "__main__":
+    show_dashboard()

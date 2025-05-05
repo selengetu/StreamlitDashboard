@@ -1,67 +1,67 @@
 Unit,Tags,BD/BA,Tenant,Status,Sqft,Market Rent,Rent,Deposit,Lease From,Lease To,Move-in,Move-out,Past Due,NSF Count,Late Count,Property Name
-1-Jan,Renewing,1/1.00,Elizabeth  Dor,Current,675,"1,450.00","1,450.00","1,393.00",5/1/2023,4/29/2025,4/26/2022,,0,0,0,Casa Aurora
-3-Jan,renewing,2/1.00,Sylvia V. Allison,Current,979,"1,750.00","1,750.00","1,750.00",7/3/2023,6/30/2025,7/3/2023,,-369.02,0,0,Casa Aurora
-5-Jan,Renewing,1/1.00,LAFAYETTE ROLLE,Current,675,"1,450.00","1,525.00","1,450.00",3/18/2024,2/28/2026,3/18/2024,,0,0,0,Casa Aurora
-7-Jan,renewing,2/1.00,Ashley Sloane,Current,979,"1,750.00","1,750.00","1,750.00",3/31/2020,6/30/2025,3/31/2020,,0,1,0,Casa Aurora
-11-Feb,,1/1.00,Clement  G. Williams,Current,675,"1,450.00","1,450.00","1,450.00",9/1/2021,9/30/2025,9/1/2021,,0,0,0,Casa Aurora
-13-Feb,non renewal- rude to staf and breaks property rules a lot,2/1.00,,Vacant-Unrented,979,"1,750.00",,0,,,,,,,,Casa Aurora
-15-Feb,,1/1.00,Robert  B. Mitchell Daxon (FD),Vacant-Unrented,675,"1,450.00","1,450.00",0,3/24/2025,3/31/2026,3/24/2025,,"-1,685.00",0,0,Casa Aurora
-17-Feb,Renewing,2/1.00,Mylee Archer,Vacant-Unrented,979,"1,750.00","1,750.00","1,751.00",6/1/2020,5/30/2026,6/1/2017,,0,2,0,Casa Aurora
-21-Mar,"Decision pending, may be moving out of state",1/1.00,Marlo A. Black (FD),Vacant-Unrented,675,"1,450.00","1,525.00",0,3/21/2024,2/28/2026,3/21/2024,,0,2,0,Casa Aurora
-23-Mar,,2/1.00,Tania L. Cuenca,Vacant-Unrented,979,"1,750.00","1,815.00","1,750.00",12/20/2023,11/30/2025,12/20/2023,,0,0,0,Casa Aurora
-25-Mar,,1/1.00,Beatrice Cabrale,Vacant-Unrented,675,"1,450.00","1,450.00","1,450.00",8/2/2023,7/31/2025,8/2/2023,,0,0,0,Casa Aurora
-27-Mar,Renewing,2/1.00,Distefano Saint Fleur (FD),Vacant-Unrented,979,"1,750.00","1,750.00",0,5/15/2024,5/14/2025,5/15/2024,,0,0,0,Casa Aurora
-Apr-31,,1/1.00,Adelto  T. Ferrer,Vacant-Unrented,675,"1,450.00","1,450.00","1,450.00",2/14/2025,2/28/2026,2/14/2025,,0,0,0,Casa Aurora
-Apr-33,,2/1.00,Iniko L. Ho Choy,Vacant-Unrented,979,"1,750.00","1,750.00","1,750.00",12/30/2024,12/31/2025,12/30/2024,,0,0,0,Casa Aurora
-Apr-35,Under Eviction,1/1.00,,Vacant-Unrented,675,"1,450.00",,0,,,,,,,,Casa Aurora
-Apr-37,,2/1.00,Jean Rock,Current,979,"1,750.00","1,815.00","1,750.00",9/1/2020,11/30/2025,9/1/2017,,0,0,0,Casa Aurora
-11-May,Renewing,1/1.00,Theresa Flynn,Current,675,"1,450.00","1,450.00","1,450.00",2/22/2021,5/30/2026,2/22/2019,,0,0,0,Casa Aurora
-13-May,,1/1.00,Diana Fitzgerald,Current,675,"1,450.00","1,450.00","1,450.00",10/1/2020,10/31/2025,10/1/2019,,0,0,0,Casa Aurora
-15-May,,1/1.00,Herby Hyppolite,Current,675,"1,450.00","1,450.00","1,625.00",7/1/2020,8/31/2025,7/1/2018,,0,0,0,Casa Aurora
-17-May,Renewing,1/1.00,Stacy-Ann Harris,Current,675,"1,450.00","1,525.00",970,10/1/2020,1/31/2026,10/1/2017,,0,0,0,Casa Aurora
-19-May,Renewing,1/1.00,Leslie C. Marion,Current,675,"1,450.00","1,525.00","1,450.00",2/9/2023,1/31/2026,1/9/2023,,"-1,615.00",0,0,Casa Aurora
-21-May,,1/1.00,Connee M. Augustin,Current,675,"1,450.00","1,450.00","1,450.00",2/3/2025,1/31/2026,2/3/2025,,0,0,0,Casa Aurora
-23-Jun,,1/1.00,Benjamin Abel,Evict,675,"1,450.00","1,450.00","1,450.00",11/1/2020,8/31/2025,11/1/2017,,"2,362.50",1,1,Casa Aurora
-25-Jun,,1/1.00,Nikeya T. Walker (FD),Current,675,"1,450.00","1,525.00",0,8/23/2024,8/31/2025,8/23/2024,,"-1,630.00",0,0,Casa Aurora
-27-Jun,,1/1.00,Sarinna  M. Reese,Current,675,"1,450.00","1,450.00",0,2/27/2025,2/28/2026,2/27/2025,,0,0,0,Casa Aurora
-29-Jun,,1/1.00,Kiandra I. McKaskill,Current,675,"1,450.00","1,450.00",0,2/24/2025,2/28/2026,2/24/2025,,-18.33,0,0,Casa Aurora
-Jun-31,,1/1.00,Eric L. Bell,Current,675,"1,450.00","1,525.00","1,450.00",10/13/2023,9/30/2025,10/13/2023,,0,0,0,Casa Aurora
-Jun-33,,1/1.00,Jean Jean Louis,Current,675,"1,450.00","1,450.00","1,450.00",12/7/2022,11/30/2025,12/7/2022,,0,0,0,Casa Aurora
-1-Jul,Renewing,1/1.00,Antron J. Foster (FD),Current,675,"1,450.00","1,497.00",0,4/23/2024,4/30/2026,4/23/2024,,-6.33,0,0,Casa Aurora
-3-Jul,,1/1.00,Katrice D. Dunlap,Current,675,"1,450.00","1,450.00","1,450.00",3/19/2025,3/31/2026,3/19/2025,,852,0,0,Casa Aurora
-5-Jul,Renewing,1/1.00,Davis B. Pierre,Current,675,"1,450.00","1,450.00","1,450.00",5/2/2023,4/30/2026,5/2/2023,,0,0,0,Casa Aurora
-7-Jul,Renewing,1/1.00,Kermit B. Mitchell (FD),Current,675,"1,450.00","1,450.00",0,4/19/2024,4/30/2026,4/19/2024,,0,0,0,Casa Aurora
-9-Jul,READY,1/1.00,keith A. briscoe (FD),Current,675,"1,450.00","1,450.00","1,450.00",5/7/2024,4/30/2026,5/7/2024,,0,0,0,Casa Aurora
-11-Jul,,1/1.00,Shatorya Chappell,Current,675,"1,450.00","1,450.00","1,450.00",10/24/2020,10/31/2025,10/24/2018,,0,0,0,Casa Aurora
-21-Aug,Renewing,1/1.00,Margaret Harvey,Current,675,"1,450.00","1,450.00",850,4/1/2021,5/31/2026,4/1/2017,,0,0,0,Casa Aurora
-23-Aug,,1/1.00,Darlene Renfroe-Thomas (FD),Current,675,"1,450.00","1,525.00",0,2/16/2024,2/28/2026,2/16/2024,,0,0,0,Casa Aurora
-25-Aug,,1/1.00,Alysa  J. Everett,Current,675,"1,450.00","1,450.00",0,1/10/2025,12/31/2025,1/10/2025,,0,0,0,Casa Aurora
-27-Aug,,1/1.00,Mildred L. Daniels,Current,675,"1,450.00","1,525.00",0,8/2/2024,7/31/2025,8/2/2024,,0,0,0,Casa Aurora
-29-Aug,Renewing,1/1.00,,Vacant-Unrented,675,"1,450.00",,0,,,,,,,,Casa Aurora
-31-Aug,,1/1.00,Elizabeth Rodriguez,Current,675,"1,450.00","1,450.00","1,450.00",2/27/2025,2/28/2026,2/27/2025,,0,0,0,Casa Aurora
-Sep-41,Renewing,1/1.00,Andrea Rowe,Current,675,"1,450.00","1,450.00","1,450.00",1/30/2021,4/30/2026,1/30/2021,,0,0,0,Casa Aurora
-Sep-43,,1/1.00,Nathan G. Willis,Current,675,"1,450.00","1,510.00","1,450.00",12/1/2022,11/30/2025,12/1/2022,,0,0,0,Casa Aurora
-Sep-45,,1/1.00,Wilga  Louijuste,Current,675,"1,450.00","1,525.00","1,450.00",12/20/2023,11/30/2025,12/20/2023,,0,0,0,Casa Aurora
-Sep-47,,1/1.00,Yanitte Pierre,Current,675,"1,450.00","1,525.00",940,8/1/2020,11/30/2025,8/1/2017,,0,0,0,Casa Aurora
-Sep-49,Renewing,1/1.00,Rebekah S. Finley,Current,675,"1,450.00","1,525.00","1,450.00",3/29/2024,2/28/2026,3/29/2024,,0,0,0,Casa Aurora
-Sep-51,,1/1.00,Samantha Louis,Current,675,"1,450.00","1,450.00","1,450.02",6/1/2020,7/31/2025,6/9/2017,,0,4,0,Casa Aurora
-Oct-61,,1/1.00,Magnolia Herrera,Current,675,"1,450.00","1,450.00","1,450.00",2/4/2025,1/31/2026,2/4/2025,,0,0,0,Casa Aurora
-Oct-63,,1/1.00,Wisnel Luc,Current,675,"1,450.00","1,450.00","1,450.01",9/3/2020,7/31/2025,9/3/2020,,-15,0,0,Casa Aurora
-Oct-65,,1/1.00,OLTINE PIERRE,Current,675,"1,450.00","1,525.00","1,450.00",10/3/2024,9/30/2025,10/3/2024,,0,0,0,Casa Aurora
-Oct-67,,1/1.00,Emily  S. Bland,Current,675,"1,450.00","1,450.00","1,450.00",3/17/2025,3/31/2026,3/17/2025,,-725,0,0,Casa Aurora
-Oct-69,,1/1.00,Ruth Ceant,Current,675,"1,450.00","1,525.00","1,450.00",10/11/2022,9/30/2025,10/11/2022,,0,1,0,Casa Aurora
-Oct-71,,1/1.00,Sabrina L. Noble,Current,675,"1,450.00","1,450.00","1,450.00",9/13/2023,8/31/2025,9/13/2023,,0,0,0,Casa Aurora
-Nov-81,,1/1.00,Miguel Castillo,Current,675,"1,450.00","1,450.00","1,450.00",8/13/2020,9/30/2025,8/13/2020,,0,2,0,Casa Aurora
-Nov-83,RENEWING,1/1.00,Robert Hastings,Current,675,"1,450.00","1,450.00","1,450.02",6/1/2020,6/30/2025,6/1/2017,,0,0,0,Casa Aurora
-Nov-85,Renewing,1/1.00,Rohan Robinson,Current,675,"1,450.00",0,"1,452.00",,5/31/2025,2/5/2020,,0,0,0,Casa Aurora
-Nov-87,Renewing,1/1.00,Patrice Pierre,Current,675,"1,450.00","1,525.00","1,450.00",12/1/2020,2/28/2026,12/1/2017,,0,0,0,Casa Aurora
-Nov-89,renewing,1/1.00,Tyrik  J. Robinson,Evict,675,"1,450.00","1,450.00","1,450.00",7/1/2023,6/30/2025,9/2/2023,,"1,407.50",0,0,Casa Aurora
-Nov-91,Renewing,1/1.00,Armel Laguerre,Current,675,"1,450.00","1,525.00","1,450.00",4/4/2023,3/31/2026,4/4/2023,,0,0,0,Casa Aurora
-Dec-51,Renewing,2/1.00,Choupine Toussaint,Current,979,"1,750.00","1,815.00","1,750.00",12/1/2020,2/28/2026,12/1/2017,,0,0,0,Casa Aurora
-Dec-53,Renewing,2/1.00,Jordany Paul,Evict,979,"1,750.00","1,750.00","1,750.00",6/1/2024,5/31/2025,4/8/2021,,"2,497.50",4,0,Casa Aurora
-Dec-55,Renewing,1/1.00,MARCIAL Vega,Current,675,"1,450.00",0,"1,450.00",6/1/2023,5/31/2025,2/8/2020,,0,0,0,Casa Aurora
-Dec-57,,1/1.00,Dieudonne  joseph,Current,675,"1,450.00","1,450.00","1,450.00",1/7/2025,12/31/2025,1/7/2025,,0,0,0,Casa Aurora
-13-3121,,1/1.00,Olguens Odena,Current,675,"1,450.00","1,450.00","1,450.00",2/4/2025,1/31/2026,2/4/2025,,0,0,0,Casa Aurora
+45658,Renewing,1/1.00,Elizabeth  Dor,Current,675,"1,450.00","1,450.00","1,393.00",5/1/2023,4/29/2025,4/26/2022,,0,0,0,Casa Aurora
+45659,renewing,2/1.00,Sylvia V. Allison,Current,979,"1,750.00","1,750.00","1,750.00",7/3/2023,6/30/2025,7/3/2023,,-369.02,0,0,Casa Aurora
+45660,Renewing,1/1.00,LAFAYETTE ROLLE,Current,675,"1,450.00","1,525.00","1,450.00",3/18/2024,2/28/2026,3/18/2024,,0,0,0,Casa Aurora
+45661,renewing,2/1.00,Ashley Sloane,Current,979,"1,750.00","1,750.00","1,750.00",3/31/2020,6/30/2025,3/31/2020,,0,1,0,Casa Aurora
+45662,,1/1.00,Clement  G. Williams,Current,675,"1,450.00","1,450.00","1,450.00",9/1/2021,9/30/2025,9/1/2021,,0,0,0,Casa Aurora
+45663,non renewal- rude to staf and breaks property rules a lot,2/1.00,,Vacant-Unrented,979,"1,750.00",,0,,,,,,,,Casa Aurora
+45664,,1/1.00,Robert  B. Mitchell Daxon (FD),Vacant-Unrented,675,"1,450.00","1,450.00",0,3/24/2025,3/31/2026,3/24/2025,,"-1,685.00",0,0,Casa Aurora
+45665,Renewing,2/1.00,Mylee Archer,Vacant-Unrented,979,"1,750.00","1,750.00","1,751.00",6/1/2020,5/30/2026,6/1/2017,,0,2,0,Casa Aurora
+45666,"Decision pending, may be moving out of state",1/1.00,Marlo A. Black (FD),Vacant-Unrented,675,"1,450.00","1,525.00",0,3/21/2024,2/28/2026,3/21/2024,,0,2,0,Casa Aurora
+45667,,2/1.00,Tania L. Cuenca,Vacant-Unrented,979,"1,750.00","1,815.00","1,750.00",12/20/2023,11/30/2025,12/20/2023,,0,0,0,Casa Aurora
+45668,,1/1.00,Beatrice Cabrale,Vacant-Unrented,675,"1,450.00","1,450.00","1,450.00",8/2/2023,7/31/2025,8/2/2023,,0,0,0,Casa Aurora
+45669,Renewing,2/1.00,Distefano Saint Fleur (FD),Vacant-Unrented,979,"1,750.00","1,750.00",0,5/15/2024,5/14/2025,5/15/2024,,0,0,0,Casa Aurora
+45670,,1/1.00,Adelto  T. Ferrer,Vacant-Unrented,675,"1,450.00","1,450.00","1,450.00",2/14/2025,2/28/2026,2/14/2025,,0,0,0,Casa Aurora
+45671,,2/1.00,Iniko L. Ho Choy,Vacant-Unrented,979,"1,750.00","1,750.00","1,750.00",12/30/2024,12/31/2025,12/30/2024,,0,0,0,Casa Aurora
+45672,Under Eviction,1/1.00,,Vacant-Unrented,675,"1,450.00",,0,,,,,,,,Casa Aurora
+45673,,2/1.00,Jean Rock,Current,979,"1,750.00","1,815.00","1,750.00",9/1/2020,11/30/2025,9/1/2017,,0,0,0,Casa Aurora
+45674,Renewing,1/1.00,Theresa Flynn,Current,675,"1,450.00","1,450.00","1,450.00",2/22/2021,5/30/2026,2/22/2019,,0,0,0,Casa Aurora
+45675,,1/1.00,Diana Fitzgerald,Current,675,"1,450.00","1,450.00","1,450.00",10/1/2020,10/31/2025,10/1/2019,,0,0,0,Casa Aurora
+45676,,1/1.00,Herby Hyppolite,Current,675,"1,450.00","1,450.00","1,625.00",7/1/2020,8/31/2025,7/1/2018,,0,0,0,Casa Aurora
+45677,Renewing,1/1.00,Stacy-Ann Harris,Current,675,"1,450.00","1,525.00",970,10/1/2020,1/31/2026,10/1/2017,,0,0,0,Casa Aurora
+45678,Renewing,1/1.00,Leslie C. Marion,Current,675,"1,450.00","1,525.00","1,450.00",2/9/2023,1/31/2026,1/9/2023,,"-1,615.00",0,0,Casa Aurora
+45679,,1/1.00,Connee M. Augustin,Current,675,"1,450.00","1,450.00","1,450.00",2/3/2025,1/31/2026,2/3/2025,,0,0,0,Casa Aurora
+45680,,1/1.00,Benjamin Abel,Evict,675,"1,450.00","1,450.00","1,450.00",11/1/2020,8/31/2025,11/1/2017,,"2,362.50",1,1,Casa Aurora
+45681,,1/1.00,Nikeya T. Walker (FD),Current,675,"1,450.00","1,525.00",0,8/23/2024,8/31/2025,8/23/2024,,"-1,630.00",0,0,Casa Aurora
+45682,,1/1.00,Sarinna  M. Reese,Current,675,"1,450.00","1,450.00",0,2/27/2025,2/28/2026,2/27/2025,,0,0,0,Casa Aurora
+45683,,1/1.00,Kiandra I. McKaskill,Current,675,"1,450.00","1,450.00",0,2/24/2025,2/28/2026,2/24/2025,,-18.33,0,0,Casa Aurora
+45684,,1/1.00,Eric L. Bell,Current,675,"1,450.00","1,525.00","1,450.00",10/13/2023,9/30/2025,10/13/2023,,0,0,0,Casa Aurora
+45685,,1/1.00,Jean Jean Louis,Current,675,"1,450.00","1,450.00","1,450.00",12/7/2022,11/30/2025,12/7/2022,,0,0,0,Casa Aurora
+45686,Renewing,1/1.00,Antron J. Foster (FD),Current,675,"1,450.00","1,497.00",0,4/23/2024,4/30/2026,4/23/2024,,-6.33,0,0,Casa Aurora
+45687,,1/1.00,Katrice D. Dunlap,Current,675,"1,450.00","1,450.00","1,450.00",3/19/2025,3/31/2026,3/19/2025,,852,0,0,Casa Aurora
+45688,Renewing,1/1.00,Davis B. Pierre,Current,675,"1,450.00","1,450.00","1,450.00",5/2/2023,4/30/2026,5/2/2023,,0,0,0,Casa Aurora
+11689,Renewing,1/1.00,Kermit B. Mitchell (FD),Current,675,"1,450.00","1,450.00",0,4/19/2024,4/30/2026,4/19/2024,,0,0,0,Casa Aurora
+12055,READY,1/1.00,keith A. briscoe (FD),Current,675,"1,450.00","1,450.00","1,450.00",5/7/2024,4/30/2026,5/7/2024,,0,0,0,Casa Aurora
+12420,,1/1.00,Shatorya Chappell,Current,675,"1,450.00","1,450.00","1,450.00",10/24/2020,10/31/2025,10/24/2018,,0,0,0,Casa Aurora
+12785,Renewing,1/1.00,Margaret Harvey,Current,675,"1,450.00","1,450.00",850,4/1/2021,5/31/2026,4/1/2017,,0,0,0,Casa Aurora
+13150,,1/1.00,Darlene Renfroe-Thomas (FD),Current,675,"1,450.00","1,525.00",0,2/16/2024,2/28/2026,2/16/2024,,0,0,0,Casa Aurora
+13516,,1/1.00,Alysa  J. Everett,Current,675,"1,450.00","1,450.00",0,1/10/2025,12/31/2025,1/10/2025,,0,0,0,Casa Aurora
+13881,,1/1.00,Mildred L. Daniels,Current,675,"1,450.00","1,525.00",0,8/2/2024,7/31/2025,8/2/2024,,0,0,0,Casa Aurora
+14246,Renewing,1/1.00,,Vacant-Unrented,675,"1,450.00",,0,,,,,,,,Casa Aurora
+14611,,1/1.00,Elizabeth Rodriguez,Current,675,"1,450.00","1,450.00","1,450.00",2/27/2025,2/28/2026,2/27/2025,,0,0,0,Casa Aurora
+14977,Renewing,1/1.00,Andrea Rowe,Current,675,"1,450.00","1,450.00","1,450.00",1/30/2021,4/30/2026,1/30/2021,,0,0,0,Casa Aurora
+15342,,1/1.00,Nathan G. Willis,Current,675,"1,450.00","1,510.00","1,450.00",12/1/2022,11/30/2025,12/1/2022,,0,0,0,Casa Aurora
+15707,,1/1.00,Wilga  Louijuste,Current,675,"1,450.00","1,525.00","1,450.00",12/20/2023,11/30/2025,12/20/2023,,0,0,0,Casa Aurora
+16072,,1/1.00,Yanitte Pierre,Current,675,"1,450.00","1,525.00",940,8/1/2020,11/30/2025,8/1/2017,,0,0,0,Casa Aurora
+16438,Renewing,1/1.00,Rebekah S. Finley,Current,675,"1,450.00","1,525.00","1,450.00",3/29/2024,2/28/2026,3/29/2024,,0,0,0,Casa Aurora
+16803,,1/1.00,Samantha Louis,Current,675,"1,450.00","1,450.00","1,450.02",6/1/2020,7/31/2025,6/9/2017,,0,4,0,Casa Aurora
+17168,,1/1.00,Magnolia Herrera,Current,675,"1,450.00","1,450.00","1,450.00",2/4/2025,1/31/2026,2/4/2025,,0,0,0,Casa Aurora
+17533,,1/1.00,Wisnel Luc,Current,675,"1,450.00","1,450.00","1,450.01",9/3/2020,7/31/2025,9/3/2020,,-15,0,0,Casa Aurora
+17899,,1/1.00,OLTINE PIERRE,Current,675,"1,450.00","1,525.00","1,450.00",10/3/2024,9/30/2025,10/3/2024,,0,0,0,Casa Aurora
+18264,,1/1.00,Emily  S. Bland,Current,675,"1,450.00","1,450.00","1,450.00",3/17/2025,3/31/2026,3/17/2025,,-725,0,0,Casa Aurora
+18629,,1/1.00,Ruth Ceant,Current,675,"1,450.00","1,525.00","1,450.00",10/11/2022,9/30/2025,10/11/2022,,0,1,0,Casa Aurora
+18994,,1/1.00,Sabrina L. Noble,Current,675,"1,450.00","1,450.00","1,450.00",9/13/2023,8/31/2025,9/13/2023,,0,0,0,Casa Aurora
+19360,,1/1.00,Miguel Castillo,Current,675,"1,450.00","1,450.00","1,450.00",8/13/2020,9/30/2025,8/13/2020,,0,2,0,Casa Aurora
+19725,RENEWING,1/1.00,Robert Hastings,Current,675,"1,450.00","1,450.00","1,450.02",6/1/2020,6/30/2025,6/1/2017,,0,0,0,Casa Aurora
+20090,Renewing,1/1.00,Rohan Robinson,Current,675,"1,450.00",0,"1,452.00",,5/31/2025,2/5/2020,,0,0,0,Casa Aurora
+20455,Renewing,1/1.00,Patrice Pierre,Current,675,"1,450.00","1,525.00","1,450.00",12/1/2020,2/28/2026,12/1/2017,,0,0,0,Casa Aurora
+20821,renewing,1/1.00,Tyrik  J. Robinson,Evict,675,"1,450.00","1,450.00","1,450.00",7/1/2023,6/30/2025,9/2/2023,,"1,407.50",0,0,Casa Aurora
+21186,Renewing,1/1.00,Armel Laguerre,Current,675,"1,450.00","1,525.00","1,450.00",4/4/2023,3/31/2026,4/4/2023,,0,0,0,Casa Aurora
+21551,Renewing,2/1.00,Choupine Toussaint,Current,979,"1,750.00","1,815.00","1,750.00",12/1/2020,2/28/2026,12/1/2017,,0,0,0,Casa Aurora
+21916,Renewing,2/1.00,Jordany Paul,Evict,979,"1,750.00","1,750.00","1,750.00",6/1/2024,5/31/2025,4/8/2021,,"2,497.50",4,0,Casa Aurora
+22282,Renewing,1/1.00,MARCIAL Vega,Current,675,"1,450.00",0,"1,450.00",6/1/2023,5/31/2025,2/8/2020,,0,0,0,Casa Aurora
+22647,,1/1.00,Dieudonne  joseph,Current,675,"1,450.00","1,450.00","1,450.00",1/7/2025,12/31/2025,1/7/2025,,0,0,0,Casa Aurora
+23012,,1/1.00,Olguens Odena,Current,675,"1,450.00","1,450.00","1,450.00",2/4/2025,1/31/2026,2/4/2025,,0,0,0,Casa Aurora
 13-3123,,1/1.00,Stacey  B. Zarzuela,Current,675,"1,450.00","1,450.00","1,450.00",2/3/2025,1/31/2026,2/3/2025,,0,0,0,Casa Aurora
 13-3125,,1/1.00,James Crowder (FD),Current,675,"1,450.00","1,450.00",0,2/21/2025,2/28/2026,2/21/2025,,0,0,0,Casa Aurora
 13-3127,Renewing,1/1.00,Kayron  C. Adams,Current,675,"1,450.00","1,450.00","1,450.00",4/17/2023,4/30/2026,4/17/2023,,0,0,0,Casa Aurora
