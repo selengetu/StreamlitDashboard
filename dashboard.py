@@ -1471,7 +1471,15 @@ def show_dashboard():
         with tab6:
             st.subheader("📄 Billings")
             st.write(bill1)
-       
+    st.markdown(
+        """
+       <div style="text-align: center; font-size: 0.9rem; color: #4a4a4a;">
+        Copyright © 2025 <a href="https://zuckermanautomationgroup.com" target="_blank">zuckermanautomationgroup.com</a> |
+        Powered by Zuckerman Automation Group
+    </div>
+        """,
+        unsafe_allow_html=True
+    )     
 
 # if __name__ == "__main__":
 #     show_dashboard()
