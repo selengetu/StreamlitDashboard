@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 
-st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
+# st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
 
 def show_dashboard():
     
@@ -1906,5 +1906,5 @@ def show_dashboard():
         unsafe_allow_html=True
     )     
 
-if __name__ == "__main__":
-    show_dashboard()
+# if __name__ == "__main__":
+#     show_dashboard()
