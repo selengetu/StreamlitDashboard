@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 
-# st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
+st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
 
 def show_dashboard():
     
@@ -25,6 +25,10 @@ def show_dashboard():
         "Rent Roll": "rentroll_cleaned",
         "Leasing": "leasing_cleaned",
         "Bill": "bill_cleaned",
+        "Guest": "guest_cleaned",
+        "General Ledger1": "general_ledger1_cleaned",
+        "General Ledger2": "general_ledger2_cleaned",
+        "General Ledger3": "general_ledger3_cleaned",
         "Rent Roll 12 Months": "rentroll_12_months_combined",
     }
     today = datetime.today()
@@ -75,6 +79,10 @@ def show_dashboard():
         "Leasing": latest_files.get("Leasing"),
         "Rent Roll": latest_files.get("Rent Roll"),
         "Bill": latest_files.get("Bill"),
+        "Guest": latest_files.get("Guest"),
+        "General Ledger1": latest_files.get("General Ledger1"),
+        "General Ledger2": latest_files.get("General Ledger2"),
+        "General Ledger3": latest_files.get("General Ledger3"),
         "Rent Roll 12 Months": latest_files.get("Rent Roll 12 Months")
     }
     # 🔹 2. Load DataFrames
@@ -96,7 +104,7 @@ def show_dashboard():
     if dfs:
         tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
             "🏠 Property Performance", 
-            "💰 Rent", 
+            "💰 Financials", 
             "📝 Leasing", 
             "🔧 Maintenance", 
             "🏢 Tenants", 
@@ -123,34 +131,56 @@ def show_dashboard():
         col_prop,col_region, col_s= st.columns(3)
 
         with col_prop:
-            selected_property = st.selectbox("Filter by Property", ["All"] + properties)
+            selected_property = st.multiselect(
+                "Filter by Property",
+                options=properties,
+                default=[],
+                key="property_tab"
+            )
 
         with col_region:
-            selected_region = st.selectbox("Filter by Region", ["All"] + regions)
+            selected_region = st.multiselect(
+                "Filter by Region",
+                options=regions,
+                default=[],
+                key="region_tab"
+            )  
         
 
-        if selected_property != "All":
-            rent_roll = rent_roll[rent_roll["Property Name"] == selected_property]
-            rent_roll1 = rent_roll1[rent_roll1["Property Name"] == selected_property]
-            trailing_12months = trailing_12months[trailing_12months["Property Name"] == selected_property]
-            tenant_data = tenant_data[tenant_data["Property Name"] == selected_property]
+        if selected_property:
+            rent_roll = rent_roll[rent_roll["Property Name"].isin(selected_property)]
+            rent_roll1 = rent_roll1[rent_roll1["Property Name"].isin(selected_property)]
+            trailing_12months = trailing_12months[trailing_12months["Property Name"].isin(selected_property)]
+            tenant_data = tenant_data[tenant_data["Property Name"].isin(selected_property)]
 
-        if selected_region != "All":
-            rent_roll = rent_roll[rent_roll["Region"] == selected_region]
-            rent_roll1 = rent_roll1[rent_roll1["Region"] == selected_region]
-            trailing_12months = trailing_12months[trailing_12months["Region"] == selected_region]
-            tenant_data = tenant_data[tenant_data["Region"] == selected_region]
+        if selected_region:
+            rent_roll = rent_roll[rent_roll["Region"].isin(selected_region)]
+            rent_roll1 = rent_roll1[rent_roll1["Region"].isin(selected_region)]
+            trailing_12months = trailing_12months[trailing_12months["Region"].isin(selected_region)]
+            tenant_data = tenant_data[tenant_data["Region"].isin(selected_region)]
 
         # Metric calculations using filtered data
-        col1, col2, col3, col4, col05 = st.columns(5)
-
+        # Metric calculations using filtered data
+        col1,col01,col02,col2,col3, col4 = st.columns(6)
+        tenant_data['Lease To'] = pd.to_datetime(tenant_data['Lease To'], errors='coerce')
         all_units = rent_roll.shape[0]
         current_resident = rent_roll[rent_roll["Status"] == "Current"].shape[0]
         notice = rent_roll[rent_roll["Status"] == "Notice-Unrented"].shape[0]
         notice_re = rent_roll[rent_roll["Status"] == "Notice-Rented"].shape[0]
         evict = rent_roll[rent_roll["Status"] == "Evict"].shape[0]
-        occupied = ((current_resident + evict + notice + notice_re) / all_units) * 100 if all_units > 0 else 0
-
+        vacant_rented = rent_roll[rent_roll["Status"] == "Vacant-Rented"].shape[0]
+        vacant_unrented = rent_roll[rent_roll["Status"] == "Vacant-Unrented"].shape[0]
+        future = tenant_data[tenant_data["Status"] == "Future"].shape[0]
+        current_nonrenew = tenant_data[
+            (tenant_data["Status"] == "Current") &
+            (tenant_data["Lease To"] >= today) &
+            (tenant_data["Tenant Tags"].str.contains(r'non[\s-]?renew|not[\s-]?renew', case=False, na=False))
+        ].shape[0]
+        
+        total_vacant = vacant_rented+vacant_unrented
+        occupied = current_resident + evict + notice + notice_re
+        future_rate = ((current_resident + evict + notice + notice_re + future- current_nonrenew)/ all_units) * 100 if all_units > 0 else 0
+        occupied_rate = ((current_resident + evict + notice + notice_re) / all_units) * 100 if all_units > 0 else 0
         # Convert rent columns
         rent_roll["Rent"] = rent_roll["Rent"].replace("[\$,]", "", regex=True)
         rent_roll["Rent"] = pd.to_numeric(rent_roll["Rent"], errors="coerce")
@@ -180,11 +210,12 @@ def show_dashboard():
         
 
         # Display metrics
-        col1.metric(label="🏠 Total Units", value=f"{all_units:,.0f}")
-        col2.metric(label="📊 Occupancy Rate", value=f"{occupied:.2f}%")
-        col3.metric(label="💵 Total Rent", value=f"${total_rent:,.0f}")
-        col4.metric(label="🚪 Total Move-ins (Next 90 days)", value=f"{total_move_ins}")
-        col05.metric(label="🚪 Total Move-outs (Next 90 days)", value=f"{total_move_out}")
+        col1.metric(label="🏘️ Total Units", value=f"{all_units:,.0f}")
+        col01.metric(label="✅ Total Occupied", value=f"{occupied:,.0f}")
+        col02.metric(label="🌀 Total Vacant", value=f"{total_vacant}")
+        col2.metric(label="📈 Future Occupancy Rate (Next 90 days)", value=f"{future_rate:,.2f}%")
+        col3.metric(label="📥 Move-ins (Next 90 days)", value=f"{total_move_ins}")
+        col4.metric(label="📤 Move-outs (Next 90 days)", value=f"{total_move_out}")
 
         col5, col6 = st.columns(2)
         
@@ -229,7 +260,7 @@ def show_dashboard():
 
             # Layout
             fig.update_layout(
-                title="📊 Monthly Occupancy % and Total Units",
+                title="📊 Monthly Occupancy Trend",
                 xaxis=dict(title="Month", title_font=dict(size=14), tickfont=dict(size=12)),
                 yaxis=dict(title="Occupancy %", title_font=dict(size=14), tickfont=dict(size=12), gridcolor="lightgray"),
                 yaxis2=dict(
@@ -563,52 +594,7 @@ def show_dashboard():
         #     st.plotly_chart(fig, use_container_width=True)
 
         
-
         with col11:
-            trailing_12months['date_str'] = pd.to_datetime(trailing_12months['date_str'], format='mixed', dayfirst=False, errors='coerce')
-            trailing_12months = trailing_12months.sort_values(by='date_str')
-            summary = []
-            for date, group in trailing_12months.groupby('date_str'):
-                total = len(group)
-                evict = group[group['Status'] == 'Evict'].shape[0]
-                summary.append({
-                    "Month": date.strftime("%b %Y"),
-                    "Evict": evict
-                })
-
-            df_occ = pd.DataFrame(summary)
-
-            fig = go.Figure()
-
-            # Line chart for Occupancy %
-            fig.add_trace(
-                go.Scatter(
-                    x=df_occ["Month"],
-                    y=df_occ["Evict"],
-                    mode="lines+markers+text",
-                    name="Evict",
-                    line=dict(color="orange"),
-                    marker=dict(size=8),
-                    text=df_occ["Evict"],
-                    textposition="top center"
-                )
-            )
-
-            # Layout
-            fig.update_layout(
-                title="📊 Evictions by month",
-                xaxis=dict(title="Month", title_font=dict(size=14), tickfont=dict(size=12)),
-                yaxis=dict(title="Evict", title_font=dict(size=14), tickfont=dict(size=12), gridcolor="lightgray"),
-               
-                legend=dict(title="Metrics", font=dict(size=12)),
-                width=1000, height=600,
-                margin=dict(l=50, r=50, t=50, b=50)
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-        
-        col12 = st.columns(1)[0]
-        with col12:
 
             # Clean the 'Past Due' column: remove $ and commas, convert to float
             rent_roll['Past Due'] = (
@@ -690,25 +676,227 @@ def show_dashboard():
         rent_roll = rent_roll.merge(region_df, on="Property Name", how="left")
         rent_roll2 = rent_roll2.merge(region_df, on="Property Name", how="left")
 
+        general_ledger1 = dfs["General Ledger1"].copy()
+        general_ledger2 = dfs["General Ledger2"].copy()
+        general_ledger3 = dfs["General Ledger3"].copy()
+        general_ledger = pd.concat([general_ledger1, general_ledger2], ignore_index=True)
+
+
         properties1 = dfs["Rent Roll"]["Property Name"].dropna().unique().tolist()
         regions1 = rent_roll["Region"].dropna().unique().tolist()
+
 
         col_prop1, col_region1,col_s1 = st.columns(3)
 
         with col_prop1:
-            selected_property1 = st.selectbox("Filter by Property", ["All"] + properties1, key="property_tab2")
+            selected_property1 = st.multiselect(
+                "Filter by Property",
+                options=properties1,
+                default=[],
+                key="property_tab2"
+            )
 
         with col_region1:
-            selected_region1 = st.selectbox("Filter by Region", ["All"] + regions1, key="region_tab2")
-       
+            selected_region1 = st.multiselect(
+                "Filter by Region",
+                options=regions1,
+                default=[],
+                key="region_tab2"
+            )   
 
-        if selected_property1 != "All":
-            rent_roll = rent_roll[rent_roll["Property Name"] == selected_property1]
-            rent_roll2 = rent_roll2[rent_roll2["Property Name"] == selected_property1]
+        
 
-        if selected_region1 != "All":
-            rent_roll = rent_roll[rent_roll["Region"] == selected_region1]
-            rent_roll2 = rent_roll2[rent_roll2["Region"] == selected_region1]
+        if selected_property1:
+            rent_roll = rent_roll[rent_roll["Property Name"].isin(selected_property1)]
+            rent_roll2 = rent_roll2[rent_roll2["Property Name"].isin(selected_property1)]
+
+        if selected_region1:
+            rent_roll = rent_roll[rent_roll["Region"].isin(selected_region1)]
+            rent_roll2 = rent_roll2[rent_roll2["Region"].isin(selected_region1)]
+
+
+        col21, col22, col23, col24, col251 = st.columns(5)
+
+        
+        # Convert rent columns
+        rent_roll["Rent"] = rent_roll["Rent"].replace("[\$,]", "", regex=True)
+        rent_roll["Rent"] = pd.to_numeric(rent_roll["Rent"], errors="coerce")
+        total_rent = rent_roll["Rent"].sum()
+        total_rent_count = rent_roll.shape[0]
+        general_ledger['GL Account Code'] = general_ledger['GL Account'].str.extract(r'(\d{4})')
+        general_ledger['GL Account Code'] = pd.to_numeric(general_ledger['GL Account Code'], errors='coerce')
+
+        total_rent_df = general_ledger[(general_ledger['GL Account Code'] >= 4100) & (general_ledger['GL Account Code'] <= 4104)]
+        total_operating_income_df = general_ledger[(general_ledger['GL Account Code'] >= 4100) & (general_ledger['GL Account Code'] <= 5721)]
+        total_operating_expense_df = general_ledger[
+                ((general_ledger['GL Account Code'] >= 6210) & (general_ledger['GL Account Code'] < 6521)) |
+                (general_ledger['GL Account Code'].isin([6561, 6565, 6567, 6564])) |
+                ((general_ledger['GL Account Code'] >= 6730) & (general_ledger['GL Account Code'] < 7611)) |
+                (general_ledger['GL Account Code'].isin([7626,7627, 6563]))
+        ]
+
+            # Include 'Liability to Landlord Insurance' even without a GL Account Code
+        insurance_df = general_ledger[general_ledger['GL Account'] == 'Liability to Landlord Insurance']
+
+            # Combine operating income and insurance
+        total_operating_income_df = pd.concat([total_operating_income_df, insurance_df], ignore_index=True)
+
+            # Convert the 'Date' column to datetime to extract the month
+        total_rent_df['Date'] = pd.to_datetime(total_rent_df['Date'])
+        total_rent_df['Month'] = total_rent_df['Date'].dt.strftime('%Y-%m')
+        total_operating_income_df['Date'] = pd.to_datetime(total_operating_income_df['Date'])
+        total_operating_income_df['Month'] = total_operating_income_df['Date'].dt.strftime('%Y-%m')
+        total_operating_expense_df['Date'] = pd.to_datetime(total_operating_expense_df['Date'])
+        total_operating_expense_df['Month'] = total_operating_expense_df['Date'].dt.strftime('%Y-%m')
+            
+
+            # Clean Credit and Debit columns
+        def clean_amount(df, column):
+            df[column] = df[column].replace("[\,]", "", regex=True).replace("", "0").astype(float).round(2)
+            df[column] = pd.to_numeric(df[column], errors="coerce").fillna(0).round(2)
+
+        clean_amount(total_rent_df, "Credit")
+        clean_amount(total_rent_df, "Debit")
+        clean_amount(total_operating_income_df, "Credit")
+        clean_amount(total_operating_income_df, "Debit")
+        clean_amount(total_operating_expense_df, "Credit")
+        clean_amount(total_operating_expense_df, "Debit")
+
+            # Calculate Net Income before grouping
+        total_rent_df["Net Income"] = total_rent_df["Credit"] - total_rent_df["Debit"]
+        total_operating_income_df["Net Income"] = total_operating_income_df["Credit"] - total_operating_income_df["Debit"]
+        total_operating_expense_df["Expense"] = total_operating_expense_df["Debit"]  -  total_operating_expense_df["Credit"]
+
+        col025 = st.columns(1)[0]
+
+        with col025:    
+
+            total_units = rent_roll['Property Name'].count()
+            # Group by month
+            monthly_rent_income = total_rent_df.groupby('Month')["Net Income"].sum().reset_index()
+            monthly_rent_income.columns = ['Month', 'Total Rent Income']
+
+            monthly_operating_income = total_operating_income_df.groupby('Month')["Net Income"].sum().reset_index()
+            monthly_operating_income.columns = ['Month', 'Total Operating Income']
+
+            monthly_operating_expense = total_operating_expense_df.groupby('Month')["Expense"].sum().reset_index()
+            monthly_operating_expense.columns = ['Month', 'Total Operating Expense']
+
+            # Merge the two dataframes
+            # Merge rent income and operating income
+            monthly_summary = pd.merge(monthly_rent_income, monthly_operating_income, on="Month", how="outer").fillna(0)
+
+            # Merge with operating expenses
+            monthly_summary = pd.merge(monthly_summary, monthly_operating_expense, on="Month", how="outer").fillna(0)
+
+            monthly_summary['NOI'] = monthly_summary['Total Operating Income'] - monthly_summary['Total Operating Expense']
+            monthly_summary['Expense Ratio'] = (monthly_summary['Total Operating Expense'] / monthly_summary['Total Operating Income']) * 100
+            monthly_summary['Income per unit'] = monthly_summary['Total Operating Income'] / total_units
+            monthly_summary['Expense per unit'] = monthly_summary['Total Operating Expense'] / total_units
+            monthly_summary['NOI per unit'] = monthly_summary['NOI'] / total_units
+        
+            # Format currency columns
+            monthly_summary['Total Rent Income'] = monthly_summary['Total Rent Income'].map('${:,.0f}'.format)
+            monthly_summary['Total Operating Income'] = monthly_summary['Total Operating Income'].map('${:,.0f}'.format)
+            monthly_summary['Total Operating Expense'] = monthly_summary['Total Operating Expense'].map('${:,.0f}'.format)
+            monthly_summary['NOI'] = monthly_summary['NOI'].map('${:,.0f}'.format)
+            monthly_summary['Expense Ratio'] = monthly_summary['Expense Ratio'].map('${:.0f}'.format)
+            monthly_summary['Income per unit'] = monthly_summary['Income per unit'].map('${:.0f}'.format)
+            monthly_summary['Expense per unit'] = monthly_summary['Expense per unit'].map('${:.0f}'.format)
+            monthly_summary['NOI per unit'] = monthly_summary['NOI per unit'].map('${:.0f}'.format)
+            
+               # Display metrics
+            last_month_summary = monthly_summary.iloc[-1]
+
+            # Extract the values directly
+            last_month_total_rent = last_month_summary['Total Rent Income']
+            last_month_total_operating_income = last_month_summary['Total Operating Income']
+            last_month_total_operating_expenses = last_month_summary['Total Operating Expense']
+            last_month_noi = last_month_summary['NOI']
+
+           
+            
+            # Display metrics
+            col21.metric(label="💰 Total Rent", value=f"{last_month_total_rent}")
+            col22.metric(label="📈 Total Operating Income", value=f"{last_month_total_operating_income}")
+            col23.metric(label="💸 Total Operating Expenses", value=f"{last_month_total_operating_expenses}")
+            col24.metric(label="🏦 Net Operating Income (NOI)", value=f"{last_month_noi}")
+            col251.metric(label="💵 Rent per unit", value=f"${total_rent/total_rent_count:.0f}")
+
+            fig = go.Figure(data=[go.Table(
+                header=dict(values=list(monthly_summary.columns),
+                            fill_color='steelblue',
+                            align='center',
+                            font=dict(color='white', size=14)),
+                cells=dict(
+                    values=[monthly_summary[col] for col in monthly_summary.columns],
+                    align='center',
+                    font=dict(size=12),
+                    fill_color=[
+                        ['rgba(0,0,0,0)']* len(monthly_summary['Month']),  # Total Rent Income
+                        ['rgba(0,0,0,0)'] * len(monthly_summary['Month']),
+                        ['rgba(0,0,0,0)'] * len(monthly_summary['Month']),
+                        ['rgba(0,0,0,0)'] * len(monthly_summary['Month']), 
+                        [
+                            'red' if float(noi.replace("$", "").replace(",", "")) < 0 else 'green' 
+                            for noi in monthly_summary['NOI']
+                        ],
+                        ['rgba(0,0,0,0)'] * len(monthly_summary['Month'])
+                    ]
+                )
+            )])
+        
+            # Set table layout
+            fig.update_layout(
+                title='💸 Monthly Total Rent Income and Net Income Table',
+                height=600,
+                width=1000
+            )
+
+            # Display in Streamlit
+            st.plotly_chart(fig, use_container_width=True)
+
+        col251 = st.columns(1)[0]
+
+        with col251:
+            trailing_12months['date_str'] = pd.to_datetime(trailing_12months['date_str'], errors='coerce')
+            trailing_12months['Month'] = trailing_12months['date_str'].dt.to_period("M").astype(str)
+
+            # Convert financial columns to numeric
+            trailing_12months['Rent'] = trailing_12months['Rent'].astype(str).str.replace(r'[$,]', '', regex=True).astype(float).fillna(0)
+            trailing_12months['Past Due'] = trailing_12months['Past Due'].astype(str).str.replace(r'[$,]', '', regex=True).astype(float).fillna(0)
+            trailing_12months['Rent'] = trailing_12months['Rent'] - trailing_12months['Past Due']
+            # Group by Month
+            monthly_summary = trailing_12months.groupby('Month').agg({
+                'Rent': 'sum'
+            }).reset_index().sort_values('Month')
+
+            # Create the bar chart
+            fig = go.Figure()
+
+            # Rent (col65)
+            fig.add_trace(go.Bar(
+                x=monthly_summary['Month'],
+                y=monthly_summary['Rent'],
+                name='Rent ',
+                marker_color='lightgrey',
+                text=monthly_summary['Rent'].map('${:,.0f}'.format),
+                textposition='inside'
+            ))
+
+
+            # Layout settings
+            fig.update_layout(
+                barmode='stack',
+                title='💸 Monthly Economic Expense',
+                xaxis=dict(title='Month'),
+                yaxis=dict(title='Amount ($)', tickformat="$.2s"),
+                legend=dict(title='Payment Type'),
+                height=600,
+                width=1000
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
 
         col26, col27= st.columns(2)
 
@@ -833,43 +1021,61 @@ def show_dashboard():
 
 
     with tab3:
-        df_leasing = dfs["Leasing"].copy()
-        df_leasing1 = dfs["Leasing"].copy()
+        df_guest= dfs["Guest"].copy()
+        df_guest1 = dfs["Guest"].copy()
         
-        df_leasing = df_leasing.merge(region_df, left_on="Property", right_on="Property Name", how="left")
-        df_leasing1 = df_leasing1.merge(region_df, left_on="Property", right_on="Property Name", how="left")
+        df_guest = df_guest.merge(region_df, left_on="Property Name", right_on="Property Name", how="left")
+        df_guest1 = df_guest1.merge(region_df, left_on="Property Name", right_on="Property Name", how="left")
 
-          # Get unique filter values
-        properties3 = dfs["Leasing"]["Property"].dropna().unique().tolist()
-        regions3 = df_leasing["Region"].dropna().unique().tolist()
+        properties3 =  sorted(df_guest["Property Name"].dropna().unique().tolist() , key=str.lower)
+        regions3=  sorted(df_guest["Region"].dropna().unique().tolist(), key=str.lower)
 
-        col_prop3,col_region3,col_s3 = st.columns(3)
+        col_prop3,col_region3,col_date1, col_date2 = st.columns(4)
 
         with col_prop3:
-            selected_property3 = st.selectbox("Filter by Property", ["All"] + properties3, key="property_tab3")
+            selected_property3 = st.multiselect(
+                "Filter by Property",
+                options=properties3,
+                default=[],
+                key="property_tab3"
+            )
 
         with col_region3:
-            selected_region3 = st.selectbox("Filter by Region", ["All"] + regions3, key="region_tab3")
+            selected_region3 = st.multiselect(
+                "Filter by Region",
+                options=regions3,
+                default=[],
+                key="region_tab3"
+            ) 
+        with col_date1:
+            start_date = st.date_input("Start Date", value=datetime(2024, 1, 1), key="start_date3")
+        with col_date2:
+            end_date = st.date_input("End Date", value=datetime.now(), key="end_date3")
 
-        if selected_region3 != "All":
-            df_leasing = df_leasing[df_leasing["Region"] == selected_region3]
-            df_leasing1 = df_leasing1[df_leasing1["Region"] == selected_region3]
+        if selected_region3:
+            df_guest = df_guest[df_guest["Region"].isin(selected_region3)]
+            df_guest1 = df_guest1[df_guest1["Region"].isin(selected_region3)]
 
-        if selected_property3 != "All":
-            df_leasing = df_leasing[df_leasing["Property"] == selected_property3]
-            df_leasing1 = df_leasing1[df_leasing1["Property"] == selected_property3]
-      
+        if selected_property3:
+            df_guest = df_guest[df_guest["Property Name"].isin(selected_property3)]
+            df_guest1 = df_guest1[df_guest1["Property Name"].isin(selected_property3)]
+
+        if "Inquiry Received" in df_guest.columns:
+            df_guest["Inquiry Received"] = pd.to_datetime(df_guest["Inquiry Received"], errors="coerce")
+            df_guest = df_guest[(df_guest["Inquiry Received"] >= pd.to_datetime(start_date)) & (df_guest["Inquiry Received"] <= pd.to_datetime(end_date))]
+            df_guest1["Inquiry Received"] = pd.to_datetime(df_guest1["Inquiry Received"], errors="coerce")
+            df_guest1 = df_guest1[(df_guest1["Inquiry Received"] >= pd.to_datetime(start_date)) & (df_guest1["Inquiry Received"] <= pd.to_datetime(end_date))]
+        
         col36, col37 = st.columns(2)
 
         with col36:
 
             # Sum values across all properties
             funnel_counts = {
-                "Move-Ins": df_leasing["Move-Ins"].sum(),
-                "Approved": df_leasing["Approved"].sum(),
-                "Rental Applications": df_leasing["Rental Apps"].sum(),
-                "Completed Shows": df_leasing["Completed Showings"].sum(),
-                "Inquiries": df_leasing["Inquiries"].sum(),
+                "Move-Ins": df_guest["Move In Preference"].count(),
+                "Rental Applications": df_guest["Rental Application ID"].count(),
+                "Completed Shows": df_guest["Showings"].sum(),
+                "Inquiries": df_guest["Inquiry ID"].count(),
             }
 
             # Convert to DataFrame
@@ -907,19 +1113,19 @@ def show_dashboard():
 
         with col37:
         
-            df_prospect = dfs["Prospect"].copy()
+            df_guest = dfs["Guest"].copy()
 
             # Clean data
-            df_prospect['Source'] = df_prospect['Source'].fillna("Unknown")
+            df_guest['Source'] = df_guest['Source'].fillna("Unknown")
 
             # Group by Source
-            summary = df_prospect.groupby("Source").agg(
-                Guest_Cards=('Guest Card Inquiries', 'sum'),
-                Converted_Tenants=('Converted Tenants', 'sum')
+            summary = df_guest.groupby("Source").agg(
+                Guest_Cards=('Inquiry ID', 'count'),
+                Converted_Tenants=('Move In Preference', 'count')
             ).reset_index()
 
             # Sort by most Guest Cards
-            summary = summary.sort_values(by="Converted_Tenants", ascending=False).head(10)
+            summary = summary.sort_values(by="Guest_Cards", ascending=False).head(10)
 
             # Create bar chart
             fig = go.Figure()
@@ -962,7 +1168,6 @@ def show_dashboard():
             # Show in Streamlit
             st.plotly_chart(fig, use_container_width=True)
 
-
     with tab4:
         
         df_work = dfs["Work Orders"].copy()
@@ -977,19 +1182,29 @@ def show_dashboard():
         col_prop4, col_region4,col_s4 = st.columns(3)
 
         with col_prop4:
-            selected_property4 = st.selectbox("Filter by Property", ["All"] + properties4, key="property_tab4")
+            selected_property4 = st.multiselect(
+                "Filter by Property",
+                options=properties4,
+                default=[],
+                key="property_tab4"
+            )
 
         with col_region4:
-            selected_region4 = st.selectbox("Filter by Region", ["All"] + region4, key="region_tab4")
+            selected_region4 = st.multiselect(
+                "Filter by Region",
+                options=region4,
+                default=[],
+                key="region_tab4"
+            )   
 
+        if selected_property4:
+            df_work = df_work[df_work["Property Name"].isin(selected_property4)]
+            df_work1 = df_work1[df_work1["Property Name"].isin(selected_property4)]
 
-        if selected_property4 != "All":
-            df_work = df_work[df_work["Property Name"] == selected_property4]
-            df_work1 = df_work1[df_work1["Property Name"] == selected_property4]
+        if selected_region4:
+            df_work = df_work[df_work["Region"].isin(selected_region4)]
+            df_work1 = df_work1[df_work1["Region"].isin(selected_region4)]
 
-        if selected_region4 != "All":
-            df_work = df_work[df_work["Region"] == selected_region4]
-            df_work1 = df_work1[df_work1["Region"] == selected_region4]
 
         col45, col46 = st.columns(2)
 
@@ -1132,20 +1347,33 @@ def show_dashboard():
         col_prop5, col_region5,col_s5 = st.columns(3)
 
         with col_prop5:
-            selected_property5 = st.selectbox("Filter by Property", ["All"] + properties5, key="property_tab5")
-        
+            selected_property5 = st.multiselect(
+                "Filter by Property",
+                options=properties5,
+                default=[],
+                key="property_tab5"
+            )
+
         with col_region5:
-            selected_region5 = st.selectbox("Filter by Region", ["All"] + region5, key="region_tab5")
+            selected_region5 = st.multiselect(
+                "Filter by Region",
+                options=region5,
+                default=[],
+                key="region_tab5"
+            )   
 
-        if selected_property5 != "All":
-            rent_roll = rent_roll[rent_roll["Property Name"] == selected_property5]
-            tenant_data = tenant_data[tenant_data["Property Name"] == selected_property5]
-            tenant_data1 = tenant_data1[tenant_data1["Property Name"] == selected_property5]
 
-        if selected_region5 != "All":
-            rent_roll = rent_roll[rent_roll["Region"] == selected_region5]
-            tenant_data = tenant_data[tenant_data["Region"] == selected_region5]
-            tenant_data1 = tenant_data1[tenant_data1["Region"] == selected_region5]
+        if selected_property5:
+            rent_roll = rent_roll[rent_roll["Property Name"].isin(selected_property5)]
+            tenant_data = tenant_data[tenant_data["Property Name"].isin(selected_property5)]
+            tenant_data1 = tenant_data1[tenant_data1["Property Name"].isin(selected_property5)]
+            trailing_12months = trailing_12months[trailing_12months["Property Name"].isin(selected_property5)]
+
+        if selected_region5:
+            rent_roll = rent_roll[rent_roll["Region"].isin(selected_region5)]
+            tenant_data = tenant_data[tenant_data["Region"].isin(selected_region5)]
+            tenant_data1 = tenant_data1[tenant_data1["Region"].isin(selected_region5)]
+            trailing_12months = trailing_12months[trailing_12months["Region"].isin(selected_region5)]
 
         col51, col52, col53, col54 = st.columns(4)
 
@@ -1229,7 +1457,7 @@ def show_dashboard():
 
             st.plotly_chart(fig, use_container_width=True)
 
-        col56= st.columns(1)[0]
+        col56,col57= st.columns(2)
         with col56:
                         # Group by Property
             summary = (
@@ -1250,7 +1478,7 @@ def show_dashboard():
                 summary,
                 x="Property Name",
                 y="Eviction_Filings",
-                title="📉 Eviction Filings by Property",
+                title="📉 Eviction_Filings by Property",
                 color="Eviction_Filings",
                 color_continuous_scale="OrRd",
                 text="Eviction_Filings"
@@ -1265,10 +1493,62 @@ def show_dashboard():
 
             st.plotly_chart(fig, use_container_width=True)
 
+        with col57:
+            
+                    # Convert date string to datetime
+            trailing_12months['date_str'] = pd.to_datetime(trailing_12months['date_str'], format='%m-%d-%Y')
+
+            # Clean 'Past Due' column: remove symbols, convert to float
+            trailing_12months['Past Due'] = (
+                trailing_12months['Past Due']
+                .astype(str)
+                .str.replace(r'[\$,]', '', regex=True)
+            )
+            trailing_12months['Past Due'] = pd.to_numeric(trailing_12months['Past Due'], errors='coerce').fillna(0)
+
+            # Extract Year-Month from date
+            trailing_12months['Month'] = trailing_12months['date_str'].dt.to_period('M').dt.to_timestamp()
+            df_late = trailing_12months[trailing_12months['Past Due'] >500]
+
+            # Group by month and sum delinquency
+            df_delinquency = (
+                df_late.groupby('Month')['Past Due']
+                .sum()
+                .reset_index()
+                .sort_values('Month')
+            )
+
+            # Format month for display
+            df_delinquency['Month Label'] = df_delinquency['Month'].dt.strftime('%b %Y')
+
+            # Plot bar chart
+            fig = go.Figure()
+
+            fig.add_trace(go.Bar(
+                x=df_delinquency['Month Label'],
+                y=df_delinquency['Past Due'],
+                name='Total Delinquency',
+                marker_color='indianred',
+                text=df_delinquency['Past Due'].map('${:,.0f}'.format),
+                textposition='auto'
+            ))
+
+            fig.update_layout(
+                title="💰 Total Delinquency by Month (Trailing 12 Months)",
+                xaxis_title="Month",
+                yaxis_title="Delinquent Amount ($)",
+                yaxis_tickformat="$.2s",
+                width=1000,
+                height=600
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
     with tab6:
         
         bill = dfs["Bill"].copy()
         bill1 = dfs["Bill"].copy()
+        
 
         bill = bill.merge(region_df, on="Property Name", how="left")
         bill1 = bill1.merge(region_df, on="Property Name", how="left")
@@ -1276,29 +1556,69 @@ def show_dashboard():
         properties6 = dfs["Bill"]["Property Name"].dropna().unique().tolist()
         properties06 = dfs["Bill"]["Payee Name"].dropna().unique().tolist()
         region6 = bill["Region"].dropna().unique().tolist()
+        gl_accounts6 =  sorted(bill["GL Account Name"].dropna().unique().tolist(), key=str.lower)
 
-        col_prop6,col_region6, col_prop06= st.columns(3)
+
+        col_prop6,col_region6, col_prop06, col_gl6= st.columns(4)
 
         with col_prop6:
-            selected_property6 = st.selectbox("Filter by Property", ["All"] + properties6, key="property_tab6")
-        
+            selected_property6 = st.multiselect(
+                "Filter by Property",
+                options=properties6,
+                default=[],
+                key="property_tab6"
+            )
+
         with col_prop06:
-            selected_property06 = st.selectbox("Filter by Payee", ["All"] + properties06, key="property_tab06")
-            
+            selected_property06 = st.multiselect(
+                "Filter by Payee",
+                options=properties06,
+                default=[],
+                key="property_tab06"
+            )
+    
         with col_region6:
-            selected_region6 = st.selectbox("Filter by Region", ["All"] + region6, key="region_tab6")
+            selected_region6 = st.multiselect(
+                "Filter by Region",
+                options=region6,
+                default=[],
+                key="region_tab6"
+            )   
 
-        if selected_property6 != "All":
-            bill = bill[bill["Property Name"] == selected_property6]
-            bill1 = bill1[bill1["Property Name"] == selected_property6]
+        with col_gl6:
+            # Add a styled label for better alignment
+            st.markdown("""
+            <div style=" margin-bottom: 0px;">
+                Filter by GL Account
+            </div>
+            """, unsafe_allow_html=True)
 
-        if selected_property06 != "All":
-            bill = bill[bill["Payee Name"] == selected_property06]
-            bill1 = bill1[bill1["Payee Name"] == selected_property06]
+            # Use expander for compact view
+            with st.expander("Select GL Accounts (Select All)", expanded=False):
+                selected_gl6 = st.multiselect(
+                    "Select GL Accounts",
+                    options=gl_accounts6,
+                    default=gl_accounts6,
+                    key="gl_tab6"
+                )
+        if selected_property6:
+            bill = bill[bill["Property Name"].isin(selected_property6)]
+            bill1 = bill1[bill1["Property Name"].isin(selected_property6)]
+            general_ledger = general_ledger[general_ledger["Property Name"].isin(selected_property6)]
 
-        if selected_region6 != "All":
-            bill = bill[bill["Region"] == selected_region6]
-            bill = bill[bill["Region"] == selected_region6]
+        if selected_property06:
+            bill = bill[bill["Payee Name"].isin(selected_property06)]
+            bill1 = bill1[bill1["Payee Name"].isin(selected_property06)]
+         
+
+        if selected_region6:
+            bill = bill[bill["Region"].isin(selected_region6)]
+            bill1 = bill1[bill1["Region"].isin(selected_region6)]
+            general_ledger = general_ledger[general_ledger["Region"].isin(selected_region6)]
+
+        if selected_gl6:
+            bill = bill[bill["GL Account Name"].isin(selected_gl6)]
+            bill1 = bill1[bill1["GL Account Name"].isin(selected_gl6)]
 
         col65 = st.columns(1)[0]
 
@@ -1397,7 +1717,7 @@ def show_dashboard():
             # Show chart
             st.plotly_chart(fig, use_container_width=True)
         
-        col66 = st.columns(1)[0]
+        col66, col67 = st.columns(2)
         with col66:
 
             # Ensure columns are in correct type
@@ -1446,19 +1766,124 @@ def show_dashboard():
                 hovermode="x unified"
             )
 
+        
             st.plotly_chart(fig, use_container_width=True)
+
+        with col67:
+            # Clean and prepare columns
+            bill['Paid'] = pd.to_numeric(bill['Paid'], errors='coerce').fillna(0)
+            bill['Unpaid'] = pd.to_numeric(bill['Unpaid'], errors='coerce').fillna(0)
+            bill['Approval Status'] = bill['Approval Status'].fillna("Unapproved").str.strip().str.lower()
+            bill['Payee Name'] = bill['Payee Name'].fillna("Unknown")
+
+            # Create boolean flag for approval
+            bill['Is_Approved'] = bill['Approval Status'].str.contains("approved", case=False, na=False)
+
+            # Split unpaid
+            bill['Unpaid_Approved'] = bill.apply(lambda row: row['Unpaid'] if row['Is_Approved'] else 0, axis=1)
+            bill['Unpaid_Unapproved'] = bill.apply(lambda row: row['Unpaid'] if not row['Is_Approved'] else 0, axis=1)
+
+            # Group by vendor
+            summary = (
+                bill.groupby('Payee Name')
+                .agg({
+                    'Paid': 'sum',
+                    'Unpaid_Approved': 'sum',
+                    'Unpaid_Unapproved': 'sum',
+                    'Reference': 'nunique'
+                })
+                .reset_index()
+            )
+
+            summary['Unpaid_Total'] = summary['Unpaid_Approved'] + summary['Unpaid_Unapproved']
+            summary['Total_Activity'] = summary['Unpaid_Total'] + summary['Paid']
+            top_vendors = summary.sort_values('Unpaid_Total', ascending=False).head(10)
+
+            # Plot
+            fig = go.Figure()
+
+            # Bar: Paid
+            fig.add_trace(go.Bar(
+                x=top_vendors['Payee Name'],
+                y=top_vendors['Paid'],
+                name='Paid',
+                marker_color='mediumseagreen',
+                offsetgroup=0,
+                text=top_vendors['Paid'].map('${:,.0f}'.format),
+                textposition='auto'
+            ))
+
+            # Bar: Unpaid - Approved
+            fig.add_trace(go.Bar(
+                x=top_vendors['Payee Name'],
+                y=top_vendors['Unpaid_Approved'],
+                name='Unpaid - Approved',
+                marker_color='orange',
+                offsetgroup=1,
+                base=0,
+                text=top_vendors['Unpaid_Approved'].map('${:,.0f}'.format),
+                textposition='inside'
+            ))
+
+            # Bar: Unpaid - Unapproved (stacked on approved)
+            fig.add_trace(go.Bar(
+                x=top_vendors['Payee Name'],
+                y=top_vendors['Unpaid_Unapproved'],
+                name='Unpaid - Unapproved',
+                marker_color='indianred',
+                offsetgroup=1,
+                base=top_vendors['Unpaid_Approved'],
+                text=top_vendors['Unpaid_Unapproved'].map('${:,.0f}'.format),
+                textposition='inside'
+            ))
+
+            # Line: Reference Count
+            fig.add_trace(go.Scatter(
+                x=top_vendors['Payee Name'],
+                y=top_vendors['Reference'],
+                name='Reference Count',
+                yaxis='y2',
+                mode='lines+markers+text',
+                text=top_vendors['Reference'],
+                textposition='top center',
+                line=dict(color='blue', width=2),
+                marker=dict(size=8),
+            ))
+
+            # Layout
+            fig.update_layout(
+                title="💵 Paid vs Unpaid by Vendor (Stacked) + Reference Count",
+                xaxis_title="Vendor",
+                yaxis=dict(title="Amount ($)", tickformat="$.2s"),
+                yaxis2=dict(
+                    title="Reference Count",
+                    overlaying='y',
+                    side='right',
+                    showgrid=False
+                ),
+                barmode='relative',
+                bargap=0.35,
+                legend_title="Category",
+                xaxis_tickangle=-45,
+                width=1100,
+                height=600,
+                hovermode="x unified"
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+
 
         with tab1:
             st.subheader("🏠 Property Performance")
             st.write(rent_roll1)
 
         with tab2:
-            st.subheader("💰 Rent")
+            st.subheader("💰 Financials")
             st.write(rent_roll2)
 
         with tab3:
             st.subheader("📝 Leasing")
-            st.write(df_leasing1)
+            st.write(df_guest)
          
         with tab4:
             st.subheader("🔧 Maintenance")
@@ -1481,5 +1906,5 @@ def show_dashboard():
         unsafe_allow_html=True
     )     
 
-# if __name__ == "__main__":
-#     show_dashboard()
+if __name__ == "__main__":
+    show_dashboard()
