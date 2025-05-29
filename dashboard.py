@@ -10,13 +10,13 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 
-# st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
+st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
 
 def show_dashboard():
     
     BASE_DIR = os.path.join(os.getcwd(), "dummy_csvs")  # Use relative path
 
-    st.title("Appfolio Dashboard")
+    st.title("📊 Appfolio Dashboard")
     # Define file prefixes
     file_prefixes = {
         "Tenant Data": "tenant_data_cleaned",
@@ -112,9 +112,9 @@ def show_dashboard():
     with tab1:
 
        # Filter data
-        rent_roll = dfs["Rent Roll"].copy()
-        trailing_12months = dfs["Rent Roll 12 Months"].copy()  
-        tenant_data = dfs["Tenant Data"].copy()
+        rent_roll = dfs["Rent Roll"]
+        trailing_12months = dfs["Rent Roll 12 Months"]
+        tenant_data = dfs["Tenant Data"]
 
         rent_roll = rent_roll.merge(region_df, on="Property Name", how="left")
         trailing_12months = trailing_12months.merge(region_df, on="Property Name", how="left")
@@ -633,20 +633,18 @@ def show_dashboard():
 
     with tab2:
          # Filter data
-        rent_roll = dfs["Rent Roll"].copy()
         rent_roll2 = dfs["Rent Roll"].copy()
 
-        rent_roll = rent_roll.merge(region_df, on="Property Name", how="left")
         rent_roll2 = rent_roll2.merge(region_df, on="Property Name", how="left")
 
-        general_ledger1 = dfs["General Ledger1"].copy()
-        general_ledger2 = dfs["General Ledger2"].copy()
-        general_ledger3 = dfs["General Ledger3"].copy()
+        general_ledger1 = dfs["General Ledger1"]
+        general_ledger2 = dfs["General Ledger2"]
+        general_ledger3 = dfs["General Ledger3"]
         general_ledger = pd.concat([general_ledger1, general_ledger2], ignore_index=True)
 
 
         properties1 = dfs["Rent Roll"]["Property Name"].dropna().unique().tolist()
-        regions1 = rent_roll["Region"].dropna().unique().tolist()
+        regions1 = rent_roll2["Region"].dropna().unique().tolist()
 
 
         col_prop1, col_region1,col_s1 = st.columns(3)
@@ -670,11 +668,9 @@ def show_dashboard():
         
 
         if selected_property1:
-            rent_roll = rent_roll[rent_roll["Property Name"].isin(selected_property1)]
             rent_roll2 = rent_roll2[rent_roll2["Property Name"].isin(selected_property1)]
 
         if selected_region1:
-            rent_roll = rent_roll[rent_roll["Region"].isin(selected_region1)]
             rent_roll2 = rent_roll2[rent_roll2["Region"].isin(selected_region1)]
 
 
@@ -682,10 +678,10 @@ def show_dashboard():
 
         
         # Convert rent columns
-        rent_roll["Rent"] = rent_roll["Rent"].replace("[\$,]", "", regex=True)
-        rent_roll["Rent"] = pd.to_numeric(rent_roll["Rent"], errors="coerce")
-        total_rent = rent_roll["Rent"].sum()
-        total_rent_count = rent_roll.shape[0]
+        rent_roll2["Rent"] = rent_roll2["Rent"].replace("[\$,]", "", regex=True)
+        rent_roll2["Rent"] = pd.to_numeric(rent_roll2["Rent"], errors="coerce")
+        total_rent = rent_roll2["Rent"].sum()
+        total_rent_count = rent_roll2.shape[0]
         general_ledger['GL Account Code'] = general_ledger['GL Account'].str.extract(r'(\d{4})')
         general_ledger['GL Account Code'] = pd.to_numeric(general_ledger['GL Account Code'], errors='coerce')
 
@@ -828,11 +824,11 @@ def show_dashboard():
 
         with col26:
             # Clean Rent and Market Rent columns
-            rent_roll["Rent"] = pd.to_numeric(rent_roll["Rent"].replace("[\$,]", "", regex=True), errors="coerce")
-            rent_roll["Market Rent"] = pd.to_numeric(rent_roll["Market Rent"].replace("[\$,]", "", regex=True), errors="coerce")
+            rent_roll2["Rent"] = pd.to_numeric(rent_roll["Rent"].replace("[\$,]", "", regex=True), errors="coerce")
+            rent_roll2["Market Rent"] = pd.to_numeric(rent_roll2["Market Rent"].replace("[\$,]", "", regex=True), errors="coerce")
 
             # Drop rows with missing rent data
-            filtered_df = rent_roll.dropna(subset=["Rent", "Market Rent"])
+            filtered_df = rent_roll2.dropna(subset=["Rent", "Market Rent"])
 
             # Group and aggregate
             avg_rent_df = filtered_df.groupby("BD/BA")[["Rent", "Market Rent"]].mean().round(0).reset_index()
@@ -947,7 +943,7 @@ def show_dashboard():
 
 
     with tab3:
-        df_guest= dfs["Guest"].copy()
+        df_guest= dfs["Guest"]
 
         df_guest = df_guest.merge(region_df, left_on="Property Name", right_on="Property Name", how="left")
 
@@ -1034,7 +1030,7 @@ def show_dashboard():
 
         with col37:
         
-            df_guest = dfs["Guest"].copy()
+            df_guest = dfs["Guest"]
 
             # Clean data
             df_guest['Source'] = df_guest['Source'].fillna("Unknown")
@@ -1091,7 +1087,7 @@ def show_dashboard():
 
     with tab4:
         
-        df_work = dfs["Work Orders"].copy()
+        df_work = dfs["Work Orders"]
 
         df_work = df_work.merge(region_df, on="Property Name", how="left")
 
@@ -1251,11 +1247,9 @@ def show_dashboard():
     with tab5:
 
         rent_roll = dfs["Rent Roll"].copy()
-        tenant_data = dfs["Tenant Data"].copy()
         tenant_data1 = dfs["Tenant Data"].copy()
 
         rent_roll = rent_roll.merge(region_df, on="Property Name", how="left")
-        tenant_data = tenant_data.merge(region_df, on="Property Name", how="left")
         tenant_data1 = tenant_data1.merge(region_df, on="Property Name", how="left")
     
         properties5 = dfs["Rent Roll"]["Property Name"].dropna().unique().tolist()
@@ -1282,13 +1276,11 @@ def show_dashboard():
 
         if selected_property5:
             rent_roll = rent_roll[rent_roll["Property Name"].isin(selected_property5)]
-            tenant_data = tenant_data[tenant_data["Property Name"].isin(selected_property5)]
             tenant_data1 = tenant_data1[tenant_data1["Property Name"].isin(selected_property5)]
             trailing_12months = trailing_12months[trailing_12months["Property Name"].isin(selected_property5)]
 
         if selected_region5:
             rent_roll = rent_roll[rent_roll["Region"].isin(selected_region5)]
-            tenant_data = tenant_data[tenant_data["Region"].isin(selected_region5)]
             tenant_data1 = tenant_data1[tenant_data1["Region"].isin(selected_region5)]
             trailing_12months = trailing_12months[trailing_12months["Region"].isin(selected_region5)]
 
@@ -1296,8 +1288,8 @@ def show_dashboard():
 
         total_residents = rent_roll[rent_roll['Status'] == 'Current'].shape[0] # or df.shape[0] if 1 row per resident
         eviction_filings = rent_roll[rent_roll['Status'] == 'Evict'].shape[0]
-        notice = tenant_data[tenant_data['Status'] == 'Notice'].shape[0]
-        future = tenant_data[tenant_data['Status'] == 'Future'].shape[0]
+        notice = tenant_data1[tenant_data1['Status'] == 'Notice'].shape[0]
+        future = tenant_data1[tenant_data1['Status'] == 'Future'].shape[0]
         evictions_per_resident = round(eviction_filings / total_residents, 3)
 
         # Display the metric card
@@ -1539,17 +1531,11 @@ def show_dashboard():
 
     with tab6:
         
-        bill = dfs["Bill"].copy()
+        bill = dfs["Bill"]
         
         bill = bill.merge(region_df, on="Property Name", how="left")
-
-        # Extract 4+ digit numeric account codes from the GL Account column
         bill['GL Account Code'] = bill['GL Account'].str.extract(r'(\d{4,})')[0]
-
-        # Drop rows with missing GL Account Code
         bill = bill[bill['GL Account Code'].notna()]
-
-        # Convert to string to match exclude list
         bill['GL Account Code'] = bill['GL Account Code'].astype(str)
 
         # Define exclude list as strings
@@ -1917,5 +1903,5 @@ def show_dashboard():
         unsafe_allow_html=True
     )     
 
-# if __name__ == "__main__":
-#     show_dashboard()
+if __name__ == "__main__":
+    show_dashboard()
