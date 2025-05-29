@@ -13,7 +13,39 @@ from wordcloud import WordCloud, STOPWORDS
 st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
 
 def show_dashboard():
-    
+    @st.cache_data
+    def load_all_latest_csvs(BASE_DIR, file_prefixes):
+        def extract_timestamp_from_filename(filename):
+            try:
+                parts = filename.rsplit("_", 2)
+                if len(parts) < 3:
+                    return datetime.min
+                date_str, time_str = parts[-2], parts[-1].split(".")[0]
+                return datetime.strptime(f"{date_str}_{time_str}", "%Y%m%d_%H%M%S")
+            except Exception as e:
+                print(f"Failed to parse timestamp: {filename} - {e}")
+                return datetime.min
+
+        files_in_directory = os.listdir(BASE_DIR)
+        latest_files = {}
+
+        for category, prefix in file_prefixes.items():
+            relevant_files = [f for f in files_in_directory if f.startswith(prefix) and f.endswith(".csv")]
+            if relevant_files:
+                latest_file = max(relevant_files, key=extract_timestamp_from_filename)
+                latest_files[category] = os.path.join(BASE_DIR, latest_file)
+
+        dfs = {}
+        for name, path in latest_files.items():
+            try:
+                dfs[name] = pd.read_csv(path)
+            except Exception as e:
+                st.warning(f"⚠️ Failed to read {path}: {e}")
+        FILES = {
+        key: latest_files.get(key) for key in file_prefixes.keys()
+        }
+        return dfs
+
     BASE_DIR = os.path.join(os.getcwd(), "dummy_csvs")  # Use relative path
 
     st.title("📊 Appfolio Dashboard")
@@ -32,73 +64,16 @@ def show_dashboard():
         "Rent Roll 12 Months": "rentroll_12_months_combined",
     }
     today = datetime.today()
-    # Initialize a dictionary to store the latest file for each category
-    latest_files = {}
+    
+    dfs = load_all_latest_csvs(BASE_DIR, file_prefixes)
+   
+    @st.cache_data
+    
+    def load_region_df():
+        return pd.read_csv("region_list.csv")
 
-    # List all files in the BASE_DIR
-    files_in_directory = os.listdir(BASE_DIR)
+    region_df = load_region_df()
 
-    # Function to extract date from the filename
-    def extract_timestamp_from_filename(filename):
-        """
-        Extracts datetime object from filenames like 'tenant_data_cleaned_20250321_115751.csv'
-        """
-        try:
-            # Extract the last two underscore-separated parts before .csv
-            parts = filename.rsplit("_", 2)  # ['tenant_data_cleaned', '20250321', '115751.csv']
-            if len(parts) < 3:
-                raise ValueError("Invalid filename format")
-            
-            date_str, time_str = parts[-2], parts[-1].split(".")[0]  # Get YYYYMMDD and HHMMSS
-
-            # Convert to datetime object
-            return datetime.strptime(f"{date_str}_{time_str}", "%Y%m%d_%H%M%S")
-        except ValueError as e:
-            print(f"Error parsing date from {filename}: {e}")
-            return datetime.min  # Return a minimal datetime to avoid crashing
-
-    # Iterate through each category and find the latest file
-    for category, prefix in file_prefixes.items():
-        # Filter files based on the prefix
-        relevant_files = [f for f in files_in_directory if f.startswith(prefix) and f.endswith(".csv")]
-        
-        if relevant_files:
-            # Sort the files by timestamp extracted from their filenames in descending order (latest first)
-            latest_file = max(relevant_files, key=extract_timestamp_from_filename)
-            latest_files[category] = os.path.join(BASE_DIR, latest_file)
-
-    # Print the latest files for each category
-    for category, file_path in latest_files.items():
-        print(f"Latest {category}: {file_path}")
-
-    # Store latest files in a dictionary
-    FILES = {
-        "Tenant Data": latest_files.get("Tenant Data"),
-        "Work Orders": latest_files.get("Work Orders"),
-        "Prospect": latest_files.get("Prospect"),
-        "Leasing": latest_files.get("Leasing"),
-        "Rent Roll": latest_files.get("Rent Roll"),
-        "Bill": latest_files.get("Bill"),
-        "Guest": latest_files.get("Guest"),
-        "General Ledger1": latest_files.get("General Ledger1"),
-        "General Ledger2": latest_files.get("General Ledger2"),
-        "General Ledger3": latest_files.get("General Ledger3"),
-        "Rent Roll 12 Months": latest_files.get("Rent Roll 12 Months")
-    }
-    # 🔹 2. Load DataFrames
-    dfs = {}
-    for name, path in FILES.items():
-        if os.path.exists(path):  # Check if file exists
-            dfs[name] = pd.read_csv(path)
-        else:
-            st.warning(f"⚠️ File not found: {path}")
-
-
-    region_df = pd.read_csv("region_list.csv")
-
-    # 🔹 Generate and Save Plotly Charts as Images
-    image_paths = []
-    # 🔹 3. Display DataFrames in Tabs
     if dfs:
         tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
             "🏠 Property Performance", 
