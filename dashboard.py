@@ -9,9 +9,10 @@ import os
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
+import time
 
-st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
-
+# st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
+start = time.time()
 def show_dashboard():
     @st.cache_data
     def load_all_latest_csvs(BASE_DIR, file_prefixes):
@@ -68,7 +69,7 @@ def show_dashboard():
     dfs = load_all_latest_csvs(BASE_DIR, file_prefixes)
    
     @st.cache_data
-    
+
     def load_region_df():
         return pd.read_csv("region_list.csv")
 
@@ -83,13 +84,14 @@ def show_dashboard():
             "🏢 Tenants", 
             "📄 Billings"
         ])
-
+    initial_end = time.time()
+    st.write(f"⏱️ Section Initial function took {initial_end - start:.2f} seconds")
     with tab1:
 
        # Filter data
-        rent_roll = dfs["Rent Roll"]
-        trailing_12months = dfs["Rent Roll 12 Months"]
-        tenant_data = dfs["Tenant Data"]
+        rent_roll = dfs["Rent Roll"].copy()
+        trailing_12months = dfs["Rent Roll 12 Months"].copy()
+        tenant_data = dfs["Tenant Data"].copy()
 
         rent_roll = rent_roll.merge(region_df, on="Property Name", how="left")
         trailing_12months = trailing_12months.merge(region_df, on="Property Name", how="left")
@@ -178,8 +180,6 @@ def show_dashboard():
 
         # Count how many tenants moved out
         total_move_ins = len(distinct_units_move_in)
-
-        
 
         # Display metrics
         col1.metric(label="🏘️ Total Units", value=f"{all_units:,.0f}")
@@ -605,7 +605,8 @@ def show_dashboard():
 
             st.plotly_chart(fig2, use_container_width=True)
 
-
+    tab1_end = time.time()
+    st.write(f"⏱️ Tab1  took {tab1_end - initial_end:.2f} seconds")
     with tab2:
          # Filter data
         rent_roll2 = dfs["Rent Roll"].copy()
@@ -615,8 +616,9 @@ def show_dashboard():
         general_ledger1 = dfs["General Ledger1"]
         general_ledger2 = dfs["General Ledger2"]
         general_ledger3 = dfs["General Ledger3"]
-        general_ledger = pd.concat([general_ledger1, general_ledger2], ignore_index=True)
 
+        general_ledger = pd.concat([general_ledger1, general_ledger2], ignore_index=True)
+       
 
         properties1 = dfs["Rent Roll"]["Property Name"].dropna().unique().tolist()
         regions1 = rent_roll2["Region"].dropna().unique().tolist()
@@ -916,7 +918,8 @@ def show_dashboard():
             # ✨ Table
             st.dataframe(styled_summary)
 
-
+    tab2_end = time.time()
+    st.write(f"⏱️ Tab2  took {tab2_end - tab1_end:.2f} seconds")
     with tab3:
         df_guest= dfs["Guest"]
 
@@ -1059,13 +1062,12 @@ def show_dashboard():
 
             # Show in Streamlit
             st.plotly_chart(fig, use_container_width=True)
-
+    tab3_end = time.time()
+    st.write(f"⏱️ Tab3  took {tab3_end - tab2_end:.2f} seconds")
     with tab4:
         
         df_work = dfs["Work Orders"]
-
         df_work = df_work.merge(region_df, on="Property Name", how="left")
-
         properties4 = dfs["Rent Roll"]["Property Name"].dropna().unique().tolist()
         region4 = df_work["Region"].dropna().unique().tolist()
 
@@ -1218,7 +1220,8 @@ def show_dashboard():
             )
 
             st.plotly_chart(fig, use_container_width=True)
-
+    tab4_end = time.time()
+    st.write(f"⏱️ Tab4  took {tab4_end - tab3_end:.2f} seconds")
     with tab5:
 
         rent_roll = dfs["Rent Roll"].copy()
@@ -1503,7 +1506,8 @@ def show_dashboard():
             )
 
             st.plotly_chart(fig, use_container_width=True)
-
+    tab5_end = time.time()
+    st.write(f"⏱️ Tab5  took {tab5_end - tab4_end:.2f} seconds")
     with tab6:
         
         bill = dfs["Bill"]
@@ -1533,7 +1537,7 @@ def show_dashboard():
         region6 = bill["Region"].dropna().unique().tolist()
         gl_accounts6 =  sorted(bill["GL Account Name"].dropna().unique().tolist(), key=str.lower)
 
-
+        
         col_prop6,col_region6, col_prop06, col_gl6= st.columns(4)
 
         with col_prop6:
@@ -1843,12 +1847,14 @@ def show_dashboard():
             )
 
             st.plotly_chart(fig, use_container_width=True)
-
-
+       
+        tab6_end = time.time()
+        st.write(f"⏱️ tab6 process took {tab6_end - tab5_end:.2f} seconds")
+        
         with tab1:
             st.subheader("🏠 Property Performance")
             st.write(rent_roll)
-
+        
         with tab2:
             st.subheader("💰 Financials")
             st.write(rent_roll2)
@@ -1868,6 +1874,8 @@ def show_dashboard():
         with tab6:
             st.subheader("📄 Billings")
             st.write(bill)
+        tab7_end = time.time()
+        st.write(f"⏱️ All process took {tab7_end - start:.2f} seconds")
     st.markdown(
         """
        <div style="text-align: center; font-size: 0.9rem; color: #4a4a4a;">
@@ -1878,5 +1886,5 @@ def show_dashboard():
         unsafe_allow_html=True
     )     
 
-if __name__ == "__main__":
-    show_dashboard()
+# if __name__ == "__main__":
+#     show_dashboard()
