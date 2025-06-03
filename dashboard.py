@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS
 import time
 
-# st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
+st.set_page_config(page_title="Appfolio Dashboards", layout="wide")
 start = time.time()
 def show_dashboard():
     @st.cache_data
@@ -653,7 +653,6 @@ def show_dashboard():
 
         col21, col22, col23, col24, col251 = st.columns(5)
 
-        
         # Convert rent columns
         rent_roll2["Rent"] = rent_roll2["Rent"].replace("[\$,]", "", regex=True)
         rent_roll2["Rent"] = pd.to_numeric(rent_roll2["Rent"], errors="coerce")
@@ -662,46 +661,42 @@ def show_dashboard():
         general_ledger['GL Account Code'] = general_ledger['GL Account'].str.extract(r'(\d{4})')
         general_ledger['GL Account Code'] = pd.to_numeric(general_ledger['GL Account Code'], errors='coerce')
 
-        total_rent_df = general_ledger[(general_ledger['GL Account Code'] >= 4100) & (general_ledger['GL Account Code'] <= 4104)]
-        total_operating_income_df = general_ledger[(general_ledger['GL Account Code'] >= 4100) & (general_ledger['GL Account Code'] <= 5721)]
-        total_operating_expense_df = general_ledger[
-                ((general_ledger['GL Account Code'] >= 6210) & (general_ledger['GL Account Code'] < 6521)) |
-                (general_ledger['GL Account Code'].isin([6561, 6565, 6567, 6564])) |
-                ((general_ledger['GL Account Code'] >= 6730) & (general_ledger['GL Account Code'] < 7611)) |
-                (general_ledger['GL Account Code'].isin([7626,7627, 6563]))
-        ]
+        general_ledger['Date'] = pd.to_datetime(general_ledger['Date'], errors='coerce')
+        general_ledger['Month'] = general_ledger['Date'].dt.to_period('M').astype(str)
+
+        gl_code = general_ledger['GL Account Code']
+        rent_mask = (gl_code >= 4100) & (gl_code <= 4104)
+        income_mask = (gl_code >= 4100) & (gl_code <= 5721)
+        expense_mask = (
+            ((gl_code >= 6210) & (gl_code < 6521)) |
+            (gl_code.isin([6561, 6565, 6567, 6564, 6563, 7626, 7627])) |
+            ((gl_code >= 6730) & (gl_code < 7611))
+        )
+
+        # === STEP 2: Filter and copy once ===
+        total_rent_df = general_ledger[rent_mask].copy()
+        total_operating_income_df = general_ledger[income_mask].copy()
+        total_operating_expense_df = general_ledger[expense_mask].copy()
 
             # Include 'Liability to Landlord Insurance' even without a GL Account Code
         insurance_df = general_ledger[general_ledger['GL Account'] == 'Liability to Landlord Insurance']
 
             # Combine operating income and insurance
         total_operating_income_df = pd.concat([total_operating_income_df, insurance_df], ignore_index=True)
-
-            # Convert the 'Date' column to datetime to extract the month
-        total_rent_df['Date'] = pd.to_datetime(total_rent_df['Date'])
-        total_rent_df['Month'] = total_rent_df['Date'].dt.strftime('%Y-%m')
-        total_operating_income_df['Date'] = pd.to_datetime(total_operating_income_df['Date'])
-        total_operating_income_df['Month'] = total_operating_income_df['Date'].dt.strftime('%Y-%m')
-        total_operating_expense_df['Date'] = pd.to_datetime(total_operating_expense_df['Date'])
-        total_operating_expense_df['Month'] = total_operating_expense_df['Date'].dt.strftime('%Y-%m')
-            
+        def clean_and_calc(df, is_expense=False):
+            df['Credit'] = pd.to_numeric(df['Credit'].replace('[,]', '', regex=True), errors='coerce').fillna(0)
+            df['Debit'] = pd.to_numeric(df['Debit'].replace('[,]', '', regex=True), errors='coerce').fillna(0)
+            if is_expense:
+                df['Expense'] = df['Debit'] - df['Credit']
+            else:
+                df['Net Income'] = df['Credit'] - df['Debit']
+            return df
 
             # Clean Credit and Debit columns
-        def clean_amount(df, column):
-            df[column] = df[column].replace("[\,]", "", regex=True).replace("", "0").astype(float).round(2)
-            df[column] = pd.to_numeric(df[column], errors="coerce").fillna(0).round(2)
+        total_rent_df = clean_and_calc(total_rent_df)
+        total_operating_income_df = clean_and_calc(total_operating_income_df)
+        total_operating_expense_df = clean_and_calc(total_operating_expense_df, is_expense=True)
 
-        clean_amount(total_rent_df, "Credit")
-        clean_amount(total_rent_df, "Debit")
-        clean_amount(total_operating_income_df, "Credit")
-        clean_amount(total_operating_income_df, "Debit")
-        clean_amount(total_operating_expense_df, "Credit")
-        clean_amount(total_operating_expense_df, "Debit")
-
-            # Calculate Net Income before grouping
-        total_rent_df["Net Income"] = total_rent_df["Credit"] - total_rent_df["Debit"]
-        total_operating_income_df["Net Income"] = total_operating_income_df["Credit"] - total_operating_income_df["Debit"]
-        total_operating_expense_df["Expense"] = total_operating_expense_df["Debit"]  -  total_operating_expense_df["Credit"]
 
         col025 = st.columns(1)[0]
 
@@ -1886,5 +1881,5 @@ def show_dashboard():
         unsafe_allow_html=True
     )     
 
-# if __name__ == "__main__":
-#     show_dashboard()
+if __name__ == "__main__":
+    show_dashboard()
